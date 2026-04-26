@@ -1,0 +1,14 @@
+# This is a basic workflow to help you get started with Actions
+name: Rust CI
+on: [pull_request]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust
+        run: rustup update stable
+      - name: Cargo Check
+        run: cargo check # Errors out if your code doesn't compile
+      - name: Run Tests
+        run: cargo test  # Runs your D&D math unit tests
