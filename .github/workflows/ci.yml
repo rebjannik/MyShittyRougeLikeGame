@@ -1,6 +1,8 @@
 # This is a basic workflow to help you get started with Actions
 name: Rust CI
 on: [pull_request]
+permissions:
+  contents: read
 jobs:
   check:
     runs-on: ubuntu-latest
