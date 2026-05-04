@@ -1,10 +1,7 @@
 name: Rust CI
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-
+on: [pull_request]
+permissions:
+  contents: read
 jobs:
   check:
     runs-on: ubuntu-latest
