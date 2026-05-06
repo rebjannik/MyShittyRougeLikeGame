@@ -4,7 +4,6 @@ use rand::{Rng, SeedableRng};
 use rand_chacha::ChaCha8Rng;
 
 pub fn generate_map(width: usize, height: usize) -> Result<Map, MapGenError> {
-    todo!("Implement map generation logic here.");
 
     if width < 3 || height < 3 {
         return Err(MapGenError::TooSmall);
@@ -19,6 +18,24 @@ pub fn generate_map_with_seed(){
     todo!("Implement map generation with seed for reproducibility.");
 }
 
+pub fn print_map(map: &Map) -> String {
+    let mut out = String::new();
+
+    for row in map.tiles() {
+        for tile in row {
+            let symbol = match tile {
+                TileType::Wall => '#',
+                TileType::Floor => '.',
+                TileType::Door => '|',
+                _ => '?',
+            };
+            out.push(symbol);
+        }
+        out.push('\n');
+    }
+
+    out
+}
 
 
 #[cfg(test)]
@@ -77,5 +94,13 @@ mod tests {
         let map1 = generate_map_with_seed(10, 8, seed);
         let map2 = generate_map_with_seed(10, 8, seed);
         assert_eq!(map1, map2);
+    }
+
+    #[test]
+    fn test_print_map() {
+        let mut map = Map::new(3, 3, Wall);
+        map.set_tile(1, 1, Floor);
+        let expected = "###\n#.#\n###\n";
+        assert_eq!(print_map(&map), expected);
     }
 }
