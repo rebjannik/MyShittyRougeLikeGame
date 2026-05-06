@@ -1,4 +1,7 @@
 use crate::models::{Map, MapGenError, TileType};
+use crate::map_gen::models::{Map, TileType, MapGenError};
+use rand::{Rng, SeedableRng};
+use rand_chacha::ChaCha8Rng;
 
 pub fn generate_map(width: usize, height: usize) -> Result<Map, MapGenError> {
     todo!("Implement map generation logic here.");
@@ -8,7 +11,8 @@ pub fn generate_map(width: usize, height: usize) -> Result<Map, MapGenError> {
     }
 
     let map = Map::new(width, height, TileType::Wall);
-
+    
+    return Ok(map);
 }
 
 pub fn generate_map_with_seed(){
@@ -70,6 +74,8 @@ mod tests {
     fn generate_same_map_with_same_seed(){
         // For reproducibility, we should be able to generate the same map given the same seed.
         let seed = 12345;
-        let map1 = generate_map(10, 8, seed);
+        let map1 = generate_map_with_seed(10, 8, seed);
+        let map2 = generate_map_with_seed(10, 8, seed);
+        assert_eq!(map1, map2);
     }
 }
