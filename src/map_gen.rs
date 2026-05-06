@@ -1,53 +1,26 @@
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum TileType {
-    Wall,
-    Floor,
-    Door,
-}
+use crate::models::{Map, MapGenError, TileType};
 
-#[derive(Debug, PartialEq, Eq)]
-pub enum MapGenError {
-    TooSmall,
-}
+pub fn generate_map(width: usize, height: usize) -> Result<Map, MapGenError> {
+    todo!("Implement map generation logic here.");
 
-pub struct Map {
-    tiles: Vec<Vec<TileType>>,
-}
-
-impl Map {
-    pub fn width(&self) -> usize {
-        self.tiles.first().map_or(0, Vec::len)
+    if width < 3 || height < 3 {
+        return Err(MapGenError::TooSmall);
     }
 
-    pub fn height(&self) -> usize {
-        self.tiles.len()
-    }
+    let map = Map::new(width, height, TileType::Wall);
 
-    pub fn tile_at(&self, x: usize, y: usize) -> TileType {
-        self.tiles[y][x]
-    }
-
-    pub fn tiles(&self) -> &[Vec<TileType>] {
-        &self.tiles
-    }
 }
 
-mod map_gen {
-    use super::*;
-
-    pub fn generate_map(width: usize, height: usize) -> Result<Map, MapGenError> {
-        if width < 3 || height < 3 {
-            return Err(MapGenError::TooSmall);
-        }
-
-        todo!("implement map generation")
-    }
+pub fn generate_map_with_seed(){
+    todo!("Implement map generation with seed for reproducibility.");
 }
+
 
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::models::{Map, MapGenError, TileType};
 
     #[test]
     fn generate_map_returns_requested_dimensions() {
@@ -91,5 +64,12 @@ mod tests {
         let result = generate_map(2, 2);
 
         assert_eq!(result, Err(MapGenError::TooSmall));
+    }
+
+    #[test]
+    fn generate_same_map_with_same_seed(){
+        // For reproducibility, we should be able to generate the same map given the same seed.
+        let seed = 12345;
+        let map1 = generate_map(10, 8, seed);
     }
 }
