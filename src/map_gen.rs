@@ -92,7 +92,6 @@ pub fn generate_map(width: usize, height: usize) -> Result<Map, MapGenError> {
     Ok(map)
 }
 
-#[allow(dead_code)]
 pub fn generate_map_with_seed(width: usize, height: usize, seed: u64) -> Result<Map, MapGenError> {
     if width < 3 || height < 3 {
         return Err(MapGenError::TooSmall);

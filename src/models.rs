@@ -51,14 +51,12 @@ impl Map {
 
 pub struct MapRng {
     rng: ChaCha8Rng,
-    seed: u64,
 }
 
 impl MapRng {
     /// Create a MapRng with a fixed seed for reproducible gameplay
     pub fn new_fixed(seed: u64) -> Self {
         Self {
-            seed,
             rng: ChaCha8Rng::seed_from_u64(seed),
         }
     }
@@ -67,7 +65,6 @@ impl MapRng {
     pub fn new_random() -> Self {
         let seed = random::<u64>();
         Self {
-            seed,
             rng: ChaCha8Rng::seed_from_u64(seed),
         }
     }
