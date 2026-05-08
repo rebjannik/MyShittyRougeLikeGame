@@ -1,7 +1,6 @@
 use rand::{Rng, SeedableRng, random};
 use rand_chacha::ChaCha8Rng;
 
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TileType {
     Wall,
@@ -13,7 +12,6 @@ pub enum TileType {
 pub enum MapGenError {
     TooSmall,
 }
-
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Map {
@@ -38,14 +36,13 @@ impl Map {
     pub fn in_bounds(&self, x: usize, y: usize) -> bool {
         y < self.height() && x < self.width()
     }
-    
+
     pub fn tile_at(&self, x: usize, y: usize) -> TileType {
         self.tiles[y][x]
     }
 
-    pub fn set_tile(&mut self, x: usize, y: usize, tile:TileType){
+    pub fn set_tile(&mut self, x: usize, y: usize, tile: TileType) {
         self.tiles[y][x] = tile;
-    
     }
     pub fn tiles(&self) -> &[Vec<TileType>] {
         &self.tiles
