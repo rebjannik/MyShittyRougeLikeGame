@@ -1,3 +1,6 @@
+pub mod map_gen;
+pub mod models;
+
 fn main() {
-    println!("Hello, world!");
+    println!("Hello World!");
 }
