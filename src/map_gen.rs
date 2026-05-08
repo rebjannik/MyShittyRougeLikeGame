@@ -217,12 +217,12 @@ mod tests {
         }
 
         // Verify all walkable tiles are reachable
-        for y in 0..map.height() {
-            for x in 0..map.width() {
+        for (y, row) in visited.iter().enumerate() {
+            for (x, &was_visited) in row.iter().enumerate() {
                 let tile = map.tile_at(x, y);
                 if tile == TileType::Floor || tile == TileType::Door {
                     assert!(
-                        visited[y][x],
+                        was_visited,
                         "Walkable tile at ({}, {}) is unreachable (island)",
                         x, y
                     );
