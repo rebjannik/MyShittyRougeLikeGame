@@ -4,6 +4,8 @@ Project for DD1349
 
 A terminal-based roguelike dungeon crawler built with Rust, utilising Test-Driven Development (TDD) and inspired by D&D 5e combat mechanics.
 
+NOTE! AI has been used to help write these documents. Each document is planned by me, but formatting is done through AI. GitHub Copilot also reviews merge requests for safety concerns.
+
 ---
 
 # 🎯 Project Vision
