@@ -1,4 +1,4 @@
-use rand::{Rng, SeedableRng};
+use rand::{Rng, SeedableRng, random};
 use rand_chacha::ChaCha8Rng;
 
 
@@ -54,11 +54,23 @@ impl Map {
 
 pub struct MapRng {
     rng: ChaCha8Rng,
+    seed: u64,
 }
 
 impl MapRng {
-    pub fn new(seed: u64) -> Self {
+    /// Create a MapRng with a fixed seed for reproducible gameplay
+    pub fn new_fixed(seed: u64) -> Self {
         Self {
+            seed,
+            rng: ChaCha8Rng::seed_from_u64(seed),
+        }
+    }
+
+    /// Create a MapRng with a random seed for testing
+    pub fn new_random() -> Self {
+        let seed = random::<u64>();
+        Self {
+            seed,
             rng: ChaCha8Rng::seed_from_u64(seed),
         }
     }
