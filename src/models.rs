@@ -13,6 +13,35 @@ pub enum MapGenError {
     TooSmall,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum GameState {
+    MainMenu,
+    InGame,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum MenuOption {
+    StartGame,
+    Exit,
+}
+
+pub struct MainMenuState {
+    pub selected: MenuOption,
+}
+
+impl MainMenuState {
+    pub fn new() -> Self {
+        Self { selected: MenuOption::StartGame }
+    }
+
+    pub fn toggle(&mut self) {
+        self.selected = match self.selected {
+            MenuOption::StartGame => MenuOption::Exit,
+            MenuOption::Exit => MenuOption::StartGame,
+        };
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Map {
     tiles: Vec<Vec<TileType>>,
