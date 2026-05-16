@@ -5,19 +5,20 @@ use ratatui::{
     widgets::{Block, Borders, Paragraph},
     Frame,
 };
+
 use crate::models::{MainMenuState, MenuOption};
 
 pub fn render_menu(frame: &mut Frame, menu_state: &MainMenuState) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
-        .contraints([
+        .constraints([
             Constraint::Percentage(50),  // Top padding
-            Constraint::Length(10),      // Men box height
+            Constraint::Length(10),      // Menu box height
             Constraint::Percentage(30),  // Bottom padding
         ])
-        .split(frame.ares());
+        .split(frame.area());
 
-    let menu_are = Layout::default()
+    let menu_area = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([
             Constraint::Percentage(35),  // Left padding
@@ -35,22 +36,21 @@ pub fn render_menu(frame: &mut Frame, menu_state: &MainMenuState) {
 
     let exit_style = if menu_state.selected == MenuOption::Exit {
         Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)
-
     } else {
         Style::default().fg(Color::White)
     };
 
-    // bUild text lines
-    let start_text = if menu_state.selected == MenuOption::StartGame{ ">> Start Game <<" } else { "  Start Game  " };
-    let exit_text = if menu_state.selected == MenuOption::Exit {">> Exit <<"} else {" Exit ";
+    // Build text lines
+    let start_text = if menu_state.selected == MenuOption::StartGame { ">> Start Game <<" } else { "  Start Game  " };
+    let exit_text = if menu_state.selected == MenuOption::Exit { ">> Exit <<" } else { " Exit " };
 
     let text = vec![
         Line::from(Span::styled("MY SHITTY ROUGELIKE", Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD))),
-        Line::frim(""),
+        Line::from(""),
         Line::from(Span::styled(start_text, start_style)),
         Line::from(Span::styled(exit_text, exit_style)),
         Line::from(""),
-        Line::from(Span:styled("Use Up/Down to navigate, Enter to select", Style::default(),fg(Color::Gray))),
+        Line::from(Span::styled("Use Up/Down to navigate, Enter to select", Style::default().fg(Color::Gray))),
     ];
 
     let menu_block = Block::default()

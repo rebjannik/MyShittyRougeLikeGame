@@ -31,7 +31,9 @@ pub struct MainMenuState {
 
 impl MainMenuState {
     pub fn new() -> Self {
-        Self { selected: MenuOption::StartGame }
+        Self {
+            selected: MenuOption::StartGame,
+        }
     }
 
     pub fn toggle(&mut self) {
