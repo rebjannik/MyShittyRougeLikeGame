@@ -120,8 +120,7 @@ mod tests {
     fn print_map_returns_string_representation_of_map() {
         let map = generate_map(3, 3).expect("map generation should succeed");
 
-        // For a 3x3 map, we generate map_area / 3 = 3 walkable tiles via random walk,
-        // so we should have at least some floor tiles along with the door at bottom center
+        // A 3x3 map should include the bottom-center door and at least one floor tile
         let output = print_map(&map);
 
         assert!(output.contains('|'), "map should contain door");
@@ -142,14 +141,14 @@ mod tests {
     #[test]
     fn generated_map_has_only_walls_on_outer_border() {
         let map = generate_map(10, 8).expect("map generation should succeed");
-        let entry_point = (map.width() / 2, 0);
+        let entry_point = (map.width() / 2, map.height() - 1);
         for x in 0..map.width() {
-            if x == entry_point.0 && entry_point.1 == 0 {
-                continue; // Skip the entry point
-            }
-
             assert_eq!(map.tile_at(x, 0), TileType::Wall);
-            assert_eq!(map.tile_at(x, map.height() - 1), TileType::Wall);
+            if x == entry_point.0 {
+                assert_eq!(map.tile_at(x, map.height() - 1), TileType::Door);
+            } else {
+                assert_eq!(map.tile_at(x, map.height() - 1), TileType::Wall);
+            }
         }
 
         for y in 0..map.height() {
