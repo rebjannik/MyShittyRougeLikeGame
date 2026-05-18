@@ -3,29 +3,39 @@ pub mod models;
 pub mod player_action;
 pub mod ui;
 
-use crate::models::{GameState, MainMenuState, MenuOption};
+use crate::models::{AppAction, GameState, MainMenuState, MenuOption};
 use crossterm::{
     ExecutableCommand,
-    event::{self, Event, KeyCode},
+    event::{self, Event, KeyCode, KeyEvent},
     terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
-use ratatui::{Terminal, backend::CrosstermBackend};
-use std::io;
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-#[allow(meta_variable_misuse)]
+use ratatui::{Terminal, backend::CrosstermBackend};
+use std::{io, time::Duration};
+
+fn restore_terminal() -> Result<(), Box<dyn std::error::Error>> {
+    disable_raw_mode()?;
+    io::stdout().execute(LeaveAlternateScreen)?;
+    Ok(())
+}
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     enable_raw_mode()?;
     io::stdout().execute(EnterAlternateScreen)?;
     let mut terminal = Terminal::new(CrosstermBackend::new(io::stdout()))?;
 
-    // Application state variables
-    let mut current_state = GameState::MainMenu;
-    let mut menu_state = MainMenuState::new();
+    let result = run_app(&mut terminal);
 
-    #[allow(unused_variables)]
-    let mut map = None;
+    restore_terminal()?;
+    result
+}
+
+fn run_app(
+    terminal: &mut Terminal<CrosstermBackend<io::Stdout>>,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let mut current_state = GameState::MainMenu;
+    let mut menu_state = MainMenuState {
+        selected: MenuOption::StartGame,
+    };
 
     loop {
         terminal.draw(|frame| match current_state {
@@ -36,38 +46,43 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             GameState::Saves => {}
         })?;
 
-        if event::poll(std::time::Duration::from_millis(16))? {
-            if let Event::Key(key) = event::read()? {
-                match current_state {
-                    GameState::MainMenu => match key.code {
-                        KeyCode::Up | KeyCode::Down => {
-                            menu_state.toggle();
-                        }
-                        KeyCode::Enter => match menu_state.selected {
-                            MenuOption::StartGame => {
-                                // Generate map and shift states
-                                map = Some(map_gen::generate_map(80, 40).unwrap());
-                                current_state = GameState::InGame;
-                            }
-                            MenuOption::Exit => break, // Break the loop to exit
-                        },
-                        KeyCode::Char('q') => break,
-                        _ => {}
-                    },
-                    GameState::InGame => match key.code {
-                        KeyCode::Char('q') => {
-                            // Pressing Q in-game kicks you back to menu
-                            current_state = GameState::MainMenu;
-                        }
-                        _ => {}
-                    },
-                    _ => {}
+        if !event::poll(Duration::from_millis(16))? {
+            continue;
+        }
+
+        let Event::Key(key) = event::read()? else {
+            continue;
+        };
+
+        match current_state {
+            GameState::MainMenu => match handle_main_menu_input(key, &mut menu_state) {
+                AppAction::Continue => {}
+                AppAction::ChangeState(next_state) => current_state = next_state,
+                AppAction::Quit => return Ok(()),
+            },
+            GameState::InGame => {
+                if matches!(key.code, KeyCode::Esc | KeyCode::Char('q')) {
+                    current_state = GameState::MainMenu;
                 }
             }
+            GameState::CharacterCreation => {}
+            GameState::Settings => {}
+            GameState::Saves => {}
         }
     }
+}
 
-    disable_raw_mode()?;
-    io::stdout().execute(LeaveAlternateScreen)?;
-    Ok(())
+fn handle_main_menu_input(key: KeyEvent, menu_state: &mut MainMenuState) -> AppAction {
+    match key.code {
+        KeyCode::Up | KeyCode::Down => {
+            menu_state.toggle();
+            AppAction::Continue
+        }
+        KeyCode::Enter => match menu_state.selected {
+            MenuOption::StartGame => AppAction::ChangeState(GameState::InGame),
+            MenuOption::Exit => AppAction::Quit,
+        },
+        KeyCode::Char('q') => AppAction::Quit,
+        _ => AppAction::Continue,
+    }
 }
