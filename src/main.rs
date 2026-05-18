@@ -1,17 +1,20 @@
 pub mod map_gen;
 pub mod models;
+pub mod player_action;
 pub mod ui;
 
-use std::io;
-use crossterm::{
-    event::{self, Event, KeyCode},
-    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
-    ExecutableCommand,
-};
-use ratatui::{backend::CrosstermBackend, Terminal};
 use crate::models::{GameState, MainMenuState, MenuOption};
+use crossterm::{
+    ExecutableCommand,
+    event::{self, Event, KeyCode},
+    terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
+};
+use ratatui::{Terminal, backend::CrosstermBackend};
+use std::io;
 
 #[allow(unused_variables)]
+#[allow(dead_code)]
+#[allow(meta_variable_misuse)]
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     enable_raw_mode()?;
     io::stdout().execute(EnterAlternateScreen)?;
@@ -24,11 +27,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut map = None;
 
     loop {
-        terminal.draw(|frame| {
-            match current_state {
-                GameState::MainMenu => ui::render_menu(frame, &menu_state),
-                GameState::InGame => {}
-            }
+        terminal.draw(|frame| match current_state {
+            GameState::MainMenu => ui::render_menu(frame, &menu_state),
+            GameState::InGame => {}
+            GameState::CharacterCreation => {}
+            GameState::Settings => {}
+            GameState::Saves => {}
         })?;
 
         if event::poll(std::time::Duration::from_millis(16))? {
@@ -56,6 +60,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                         _ => {}
                     },
+                    _ => {}
                 }
             }
         }

@@ -27,19 +27,26 @@ pub enum MenuOption {
     StartGame,
     Exit,
 }
-
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum MonsterType {
     Goblin,
     Orc,
     Troll,
 }
-
-pub enum CharacterType{
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CharacterType {
     Rogue,
     Warrior,
     Wizard,
 }
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum WeaponType {
+    Sword,
+    Bow,
+    Staff,
+}
 
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Monster {
     hp: i32,
     monster_type: MonsterType,
@@ -51,6 +58,13 @@ pub struct Monster {
     location: (usize, usize),
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Weapon {
+    type_of_weapon: WeaponType,
+    damage: i32,
+    weight: i32,
+}
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Player {
     name: String,
     hp: i32,
@@ -61,14 +75,15 @@ pub struct Player {
     level: i32,
     xp: i32,
     location: (usize, usize),
+    items: Vec<Weapon>,
 }
 
 impl Player {
     pub fn new(name: String, character_type: CharacterType, location: (usize, usize)) -> Self {
         let (speed, stamina, stealth, strength) = match character_type {
-            CharacterType::Rogue => (0,0,0,0),
-            CharacterType::Warrior => (0,0,0,0),
-            CharacterType::Wizard => (0,0,0,0),
+            CharacterType::Rogue => (0, 0, 0, 0),
+            CharacterType::Warrior => (0, 0, 0, 0),
+            CharacterType::Wizard => (0, 0, 0, 0),
         };
         Self {
             name: name,
@@ -80,11 +95,69 @@ impl Player {
             level: 1,
             xp: 0,
             location: location,
+            items: Vec::new(),
         }
     }
 
-    pub fn move_to(&mut self, x:usize, y:usize) {
-        self.location = (x,y);
+    pub fn get_name(&self) -> &str {
+        &self.name
+    }
+
+    pub fn get_hp(&self) -> i32 {
+        self.hp
+    }
+
+    pub fn get_attr(&self) -> Vec<i32> {
+        vec![self.speed, self.stamina, self.stealth, self.strength]
+    }
+
+    pub fn get_level(&self) -> i32 {
+        self.level
+    }
+
+    pub fn get_xp(&self) -> i32 {
+        self.xp
+    }
+
+    pub fn get_location(&self) -> (usize, usize) {
+        self.location
+    }
+
+    pub fn get_items(&self) -> &Vec<Weapon> {
+        &self.items
+    }
+    pub fn move_to(&mut self, x: usize, y: usize) {
+        self.location = (x, y);
+    }
+
+    pub fn check_weapon_req(&self, weapon: &Weapon) -> bool {
+        if weapon.weight > self.strength {
+            return false;
+        }
+        true
+    }
+
+    pub fn level_up(&mut self) {
+        self.level += 1;
+        self.hp += 10;
+    }
+
+    pub fn gain_xp(&mut self, amount: i32) {
+        self.xp += amount;
+        if self.xp >= self.level * 100 {
+            self.level_up();
+            self.xp = 0;
+        }
+    }
+
+    pub fn choosen_upgrade(&mut self, upgrade: &str) {
+        match upgrade {
+            "speed" => self.speed += 1,
+            "stamina" => self.stamina += 1,
+            "stealth" => self.stealth += 1,
+            "strength" => self.strength += 1,
+            _ => {}
+        }
     }
 }
 pub struct MainMenuState {
