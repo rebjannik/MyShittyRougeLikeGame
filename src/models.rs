@@ -27,7 +27,12 @@ pub enum MenuOption {
     StartGame,
     Exit,
 }
-#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum AppAction {
+    Continue,
+    ChangeState(GameState),
+    Quit,
+}
+
 pub enum MonsterType {
     Goblin,
     Orc,
@@ -162,6 +167,14 @@ impl Player {
 }
 pub struct MainMenuState {
     pub selected: MenuOption,
+}
+
+impl Default for MainMenuState {
+    fn default() -> Self {
+        Self {
+            selected: MenuOption::StartGame,
+        }
+    }
 }
 
 impl MainMenuState {
