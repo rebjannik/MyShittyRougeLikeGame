@@ -28,12 +28,65 @@ pub enum MenuOption {
     Exit,
 }
 
-pub enum AppAction {
-    Continue,
-    ChangeState(GameState),
-    Quit,
+pub enum MonsterType {
+    Goblin,
+    Orc,
+    Troll,
 }
 
+pub enum CharacterType{
+    Rogue,
+    Warrior,
+    Wizard,
+}
+
+pub struct Monster {
+    hp: i32,
+    monster_type: MonsterType,
+    attack: i32,
+    speed: i32,
+    stamina: i32,
+    stealth: i32,
+    strength: i32,
+    location: (usize, usize),
+}
+
+pub struct Player {
+    name: String,
+    hp: i32,
+    speed: i32,
+    stamina: i32,
+    stealth: i32,
+    strength: i32,
+    level: i32,
+    xp: i32,
+    location: (usize, usize),
+}
+
+impl Player {
+    pub fn new(name: String, character_type: CharacterType, location: (usize, usize)) -> Self {
+        let (speed, stamina, stealth, strength) = match character_type {
+            CharacterType::Rogue => (0,0,0,0),
+            CharacterType::Warrior => (0,0,0,0),
+            CharacterType::Wizard => (0,0,0,0),
+        };
+        Self {
+            name: name,
+            hp: 100,
+            speed: speed,
+            stamina: stamina,
+            stealth: stealth,
+            strength: strength,
+            level: 1,
+            xp: 0,
+            location: location,
+        }
+    }
+
+    pub fn move_to(&mut self, x:usize, y:usize) {
+        self.location = (x,y);
+    }
+}
 pub struct MainMenuState {
     pub selected: MenuOption,
 }
