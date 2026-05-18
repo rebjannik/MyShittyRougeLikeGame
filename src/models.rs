@@ -28,6 +28,12 @@ pub enum MenuOption {
     Exit,
 }
 
+pub enum AppAction {
+    Continue,
+    ChangeState(GameState),
+    Quit,
+}
+
 pub struct MainMenuState {
     pub selected: MenuOption,
 }

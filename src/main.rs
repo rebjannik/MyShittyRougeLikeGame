@@ -2,7 +2,7 @@ pub mod map_gen;
 pub mod models;
 pub mod ui;
 
-use crate::models::{GameState, MainMenuState, MenuOption};
+use crate::models::{GameState, MainMenuState, MenuOption, AppAction};
 use crossterm::{
     event::{self, Event, KeyCode, KeyEvent},
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
@@ -11,6 +11,7 @@ use crossterm::{
 
 use ratatui::{backend::CrosstermBackend, Terminal};
 use std::{io, time::Duration};
+
 
 fn restore_terminal() -> Result<(), Box<dyn std::error::Error>> {
     disable_raw_mode()?;
@@ -51,8 +52,10 @@ fn run_app( terminal: &mut Terminal<CrosstermBackend<io::Stdout>>,) -> Result<()
 
         match current_state {
             GameState::MainMenu => {
-                if let Some(next_state) = handle_main_menu_input(key, &mut menu_state) {
-                    current_state = next_state;
+                match handle_main_menu_input(key, &mut menu_state) {
+                    AppAction::Continue => {}
+                    AppAction::ChangeState(next_state) => current_state = next_state,
+                    AppAction::Quit => return Ok(()),
                 }
             }
             GameState::InGame => {
@@ -70,17 +73,17 @@ fn run_app( terminal: &mut Terminal<CrosstermBackend<io::Stdout>>,) -> Result<()
 fn handle_main_menu_input(
     key: KeyEvent,
     menu_state: &mut MainMenuState,
-) -> Option<GameState> {
+) -> AppAction {
     match key.code {
         KeyCode::Up | KeyCode::Down => {
             menu_state.toggle();
-            None
+            AppAction::Continue
         }
         KeyCode::Enter => match menu_state.selected {
-            MenuOption::StartGame => Some(GameState::InGame),
-            MenuOption::Exit => Some(GameState::Saves), 
+            MenuOption::StartGame => AppAction::ChangeState(GameState::InGame),
+            MenuOption::Exit => AppAction::Quit,
         },
-        KeyCode::Char('q') => Some(GameState::Saves), 
-        _ => None,
+        KeyCode::Char('q') => AppAction::Quit,
+        _ => AppAction::Continue,
     }
 }
