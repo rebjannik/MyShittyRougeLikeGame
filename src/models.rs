@@ -45,6 +45,7 @@ pub enum CharacterType {
     Wizard,
 }
 
+#[allow(dead_code)]
 pub struct Monster {
     hp: i32,
     monster_type: MonsterType,
@@ -56,6 +57,7 @@ pub struct Monster {
     location: (usize, usize),
 }
 
+#[allow(dead_code)]
 pub struct Player {
     name: String,
     hp: i32,
@@ -94,6 +96,14 @@ impl Player {
 }
 pub struct MainMenuState {
     pub selected: MenuOption,
+}
+
+impl Default for MainMenuState {
+    fn default() -> Self {
+        Self {
+            selected: MenuOption::StartGame,
+        }
+    }
 }
 
 impl MainMenuState {
