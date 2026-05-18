@@ -24,6 +24,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut current_state = GameState::MainMenu;
     let mut menu_state = MainMenuState::new();
 
+    #[allow(unused_variables)]
     let mut map = None;
 
     loop {
