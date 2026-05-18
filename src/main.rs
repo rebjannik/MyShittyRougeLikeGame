@@ -2,16 +2,15 @@ pub mod map_gen;
 pub mod models;
 pub mod ui;
 
-use crate::models::{GameState, MainMenuState, MenuOption, AppAction};
+use crate::models::{AppAction, GameState, MainMenuState, MenuOption};
 use crossterm::{
-    event::{self, Event, KeyCode, KeyEvent},
-    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
     ExecutableCommand,
+    event::{self, Event, KeyCode, KeyEvent},
+    terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
 
-use ratatui::{backend::CrosstermBackend, Terminal};
+use ratatui::{Terminal, backend::CrosstermBackend};
 use std::{io, time::Duration};
-
 
 fn restore_terminal() -> Result<(), Box<dyn std::error::Error>> {
     disable_raw_mode()?;
@@ -29,7 +28,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     result
 }
 
-fn run_app( terminal: &mut Terminal<CrosstermBackend<io::Stdout>>,) -> Result<(), Box<dyn std::error::Error>> {
+fn run_app(
+    terminal: &mut Terminal<CrosstermBackend<io::Stdout>>,
+) -> Result<(), Box<dyn std::error::Error>> {
     let mut current_state = GameState::MainMenu;
     let mut menu_state = MainMenuState::new();
 
@@ -51,13 +52,11 @@ fn run_app( terminal: &mut Terminal<CrosstermBackend<io::Stdout>>,) -> Result<()
         };
 
         match current_state {
-            GameState::MainMenu => {
-                match handle_main_menu_input(key, &mut menu_state) {
-                    AppAction::Continue => {}
-                    AppAction::ChangeState(next_state) => current_state = next_state,
-                    AppAction::Quit => return Ok(()),
-                }
-            }
+            GameState::MainMenu => match handle_main_menu_input(key, &mut menu_state) {
+                AppAction::Continue => {}
+                AppAction::ChangeState(next_state) => current_state = next_state,
+                AppAction::Quit => return Ok(()),
+            },
             GameState::InGame => {
                 if matches!(key.code, KeyCode::Esc | KeyCode::Char('q')) {
                     current_state = GameState::MainMenu;
@@ -70,10 +69,7 @@ fn run_app( terminal: &mut Terminal<CrosstermBackend<io::Stdout>>,) -> Result<()
     }
 }
 
-fn handle_main_menu_input(
-    key: KeyEvent,
-    menu_state: &mut MainMenuState,
-) -> AppAction {
+fn handle_main_menu_input(key: KeyEvent, menu_state: &mut MainMenuState) -> AppAction {
     match key.code {
         KeyCode::Up | KeyCode::Down => {
             menu_state.toggle();
