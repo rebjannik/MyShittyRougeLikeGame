@@ -86,15 +86,15 @@ impl Player {
             CharacterType::Wizard => (0, 0, 0, 0),
         };
         Self {
-            name: name,
+            name,
             hp: 100,
-            speed: speed,
-            stamina: stamina,
-            stealth: stealth,
-            strength: strength,
+            speed,
+            stamina,
+            stealth,
+            strength,
             level: 1,
             xp: 0,
-            location: location,
+            location,
             items: Vec::new(),
         }
     }
