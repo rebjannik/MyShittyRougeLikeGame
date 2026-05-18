@@ -17,6 +17,9 @@ pub enum MapGenError {
 pub enum GameState {
     MainMenu,
     InGame,
+    CharacterCreation,
+    Settings,
+    Saves,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
