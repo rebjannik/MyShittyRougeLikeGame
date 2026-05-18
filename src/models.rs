@@ -78,7 +78,7 @@ impl Player {
             CharacterType::Wizard => (0, 0, 0, 0),
         };
         Self {
-            name: name,
+            name,
             hp: 100,
             speed,
             stamina,
@@ -86,7 +86,7 @@ impl Player {
             strength,
             level: 1,
             xp: 0,
-            location: location,
+            location,
         }
     }
 
