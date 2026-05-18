@@ -1,5 +1,6 @@
 pub mod map_gen;
 pub mod models;
+pub mod player_action;
 pub mod ui;
 
 use crate::models::{AppAction, GameState, MainMenuState, MenuOption};
