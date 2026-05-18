@@ -13,6 +13,114 @@ pub enum MapGenError {
     TooSmall,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum GameState {
+    MainMenu,
+    InGame,
+    CharacterCreation,
+    Settings,
+    Saves,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum MenuOption {
+    StartGame,
+    Exit,
+}
+pub enum AppAction {
+    Continue,
+    ChangeState(GameState),
+    Quit,
+}
+
+pub enum MonsterType {
+    Goblin,
+    Orc,
+    Troll,
+}
+
+pub enum CharacterType {
+    Rogue,
+    Warrior,
+    Wizard,
+}
+
+#[allow(dead_code)]
+pub struct Monster {
+    hp: i32,
+    monster_type: MonsterType,
+    attack: i32,
+    speed: i32,
+    stamina: i32,
+    stealth: i32,
+    strength: i32,
+    location: (usize, usize),
+}
+
+#[allow(dead_code)]
+pub struct Player {
+    name: String,
+    hp: i32,
+    speed: i32,
+    stamina: i32,
+    stealth: i32,
+    strength: i32,
+    level: i32,
+    xp: i32,
+    location: (usize, usize),
+}
+
+impl Player {
+    pub fn new(name: String, character_type: CharacterType, location: (usize, usize)) -> Self {
+        let (speed, stamina, stealth, strength) = match character_type {
+            CharacterType::Rogue => (0, 0, 0, 0),
+            CharacterType::Warrior => (0, 0, 0, 0),
+            CharacterType::Wizard => (0, 0, 0, 0),
+        };
+        Self {
+            name,
+            hp: 100,
+            speed,
+            stamina,
+            stealth,
+            strength,
+            level: 1,
+            xp: 0,
+            location,
+        }
+    }
+
+    pub fn move_to(&mut self, x: usize, y: usize) {
+        self.location = (x, y);
+    }
+}
+pub struct MainMenuState {
+    pub selected: MenuOption,
+}
+
+impl Default for MainMenuState {
+    fn default() -> Self {
+        Self {
+            selected: MenuOption::StartGame,
+        }
+    }
+}
+
+impl MainMenuState {
+    pub fn new() -> Self {
+        Self {
+            selected: MenuOption::StartGame,
+        }
+    }
+
+    pub fn toggle(&mut self) {
+        self.selected = match self.selected {
+            MenuOption::StartGame => MenuOption::Exit,
+            MenuOption::Exit => MenuOption::StartGame,
+        };
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Map {
     tiles: Vec<Vec<TileType>>,
