@@ -37,10 +37,11 @@ fn run_app(
     loop {
         terminal.draw(|frame| match current_state {
             GameState::MainMenu => ui::render_menu(frame, &menu_state),
-            GameState::InGame => {}
-            GameState::CharacterCreation => {}
-            GameState::Settings => {}
-            GameState::Saves => {}
+            GameState::InGame => {},
+            GameState::CharacterCreation => {},
+            GameState::Settings => {},
+            GameState::Saves => {},
+            _ => {},
         })?;
 
         if !event::poll(Duration::from_millis(16))? {
@@ -56,6 +57,7 @@ fn run_app(
                 AppAction::Continue => {}
                 AppAction::ChangeState(next_state) => current_state = next_state,
                 AppAction::Quit => return Ok(()),
+                _ => {}
             },
             GameState::InGame => {
                 if matches!(key.code, KeyCode::Esc | KeyCode::Char('q')) {
@@ -65,6 +67,7 @@ fn run_app(
             GameState::CharacterCreation => {}
             GameState::Settings => {}
             GameState::Saves => {}
+            _ => {},
         }
     }
 }
@@ -78,6 +81,7 @@ fn handle_main_menu_input(key: KeyEvent, menu_state: &mut MainMenuState) -> AppA
         KeyCode::Enter => match menu_state.selected {
             MenuOption::StartGame => AppAction::ChangeState(GameState::InGame),
             MenuOption::Exit => AppAction::Quit,
+            _ => AppAction::Continue,
         },
         KeyCode::Char('q') => AppAction::Quit,
         _ => AppAction::Continue,
