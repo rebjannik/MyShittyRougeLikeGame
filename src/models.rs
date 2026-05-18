@@ -50,8 +50,7 @@ pub enum WeaponType {
     Bow,
     Staff,
 }
-
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[allow(unused)]
 pub struct Monster {
     hp: i32,
     monster_type: MonsterType,
@@ -62,14 +61,12 @@ pub struct Monster {
     strength: i32,
     location: (usize, usize),
 }
-
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[allow(unused)]
 pub struct Weapon {
     type_of_weapon: WeaponType,
     damage: i32,
     weight: i32,
 }
-#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Player {
     name: String,
     hp: i32,
