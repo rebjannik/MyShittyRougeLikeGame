@@ -39,10 +39,41 @@ pub enum MonsterType {
     Troll,
 }
 
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum CharacterType {
     Rogue,
     Warrior,
     Wizard,
+}
+
+pub struct CharacterCreationState {
+    pub selected: CharacterType,
+}
+
+impl Default for CharacterCreationState {
+    fn default() -> Self {
+        Self {
+            selected: CharacterType::Rogue,
+        }
+    }
+}
+
+impl CharacterCreationState {
+    pub fn next(&mut self) {
+        self.selected = match self.selected {
+            CharacterType::Rogue => CharacterType::Warrior,
+            CharacterType::Warrior => CharacterType::Wizard,
+            CharacterType::Wizard => CharacterType::Rogue,
+        };
+    }
+
+    pub fn previous(&mut self) {
+        self.selected = match self.selected {
+            CharacterType::Rogue => CharacterType::Wizard,
+            CharacterType::Warrior => CharacterType::Rogue,
+            CharacterType::Wizard => CharacterType::Warrior,
+        };
+    }
 }
 
 #[allow(dead_code)]
@@ -94,6 +125,13 @@ impl Player {
         self.location = (x, y);
     }
 }
+
+impl CharacterCreationState {
+    pub fn build_player(&self) -> Player {
+        Player::new("Player".to_string(), self.selected, (0, 0))
+    }
+}
+
 pub struct MainMenuState {
     pub selected: MenuOption,
 }

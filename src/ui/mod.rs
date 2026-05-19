@@ -6,7 +6,7 @@ use ratatui::{
     widgets::Paragraph,
 };
 
-use crate::models::{MainMenuState, MenuOption};
+use crate::models::{CharacterCreationState, CharacterType, MainMenuState, MenuOption};
 
 pub fn render_menu(frame: &mut Frame, menu_state: &MainMenuState) {
     let chunks = Layout::default()
@@ -102,4 +102,69 @@ pub fn render_menu(frame: &mut Frame, menu_state: &MainMenuState) {
 
     let menu_paragraph = Paragraph::new(menu_lines).alignment(Alignment::Center);
     frame.render_widget(menu_paragraph, chunks[3]);
+}
+
+pub fn render_character_creation(
+    frame: &mut Frame,
+    character_state: &CharacterCreationState,
+) {
+    let chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Length(3),
+            Constraint::Length(3),
+            Constraint::Length(9),
+            Constraint::Min(3),
+        ])
+        .split(frame.area());
+
+    let title = Paragraph::new(vec![
+        Line::from(Span::styled(
+            "CHARACTER CREATION",
+            Style::default()
+                .fg(Color::Cyan)
+                .add_modifier(Modifier::BOLD),
+        )),
+        Line::from(Span::styled(
+            "Choose your class",
+            Style::default().fg(Color::DarkGray),
+        )),
+    ])
+    .alignment(Alignment::Center);
+    frame.render_widget(title, chunks[1]);
+
+    let class_line = |class: CharacterType, label: &str| -> ratatui::text::Line<'static> {
+        if class == character_state.selected {
+            // format! returns an owned String, which Span handles perfectly
+            Line::from(Span::styled(
+                format!(">> {label} <<"),
+                Style::default()
+                    .fg(Color::Yellow)
+                    .add_modifier(Modifier::BOLD),
+            ))
+        } else {
+            // label is a &str. Converting it to an owned String via .to_string() 
+            // ensures both branches return the exact same owned 'static type.
+            Line::from(Span::styled(
+                label.to_string(), 
+                Style::default().fg(Color::White)
+            ))
+        }
+    };
+
+    let options = vec![
+        class_line(CharacterType::Rogue, "Rogue"),
+        Line::from(""),
+        class_line(CharacterType::Warrior, "Warrior"),
+        Line::from(""),
+        class_line(CharacterType::Wizard, "Wizard"),
+        Line::from(""),
+        Line::from(Span::styled(
+            "▲/▼ Change Class  •  Enter Continue  •  Esc Back",
+            Style::default().fg(Color::DarkGray),
+        )),
+    ];
+
+    let options_paragraph = Paragraph::new(options).alignment(Alignment::Center);
+    frame.render_widget(options_paragraph, chunks[2]);
 }
